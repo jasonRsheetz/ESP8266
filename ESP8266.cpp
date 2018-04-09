@@ -23,6 +23,7 @@ channel_ID = _Channel_ID;
 
 //start softwareSerial 
 uart = new SoftwareSerial(RX, TX);
+uart->begin(9600);
 }
 
 //SetWifiMode
@@ -32,7 +33,8 @@ uart = new SoftwareSerial(RX, TX);
 String ESP8266::SetWifiMode(int _mode)
 {
 String changeMode = "AT+CWMODE_DEF=";
-int response;
+char response;
+String returnString;
 
 //add the mode number to the header string;
 changeMode += _mode;
@@ -40,9 +42,51 @@ changeMode += _mode;
 //send the wifi mode to the module
 uart->println(changeMode);
 
-//listen for the response and return it
-response = uart->read();
+//wait for a response
+while(uart->available() == 0)
+{}
 
-return String(response);
+//listen for the response and return it
+while(uart->available() > 0)
+{
+	if(uart->available())
+	{
+		returnString += char(uart->read());
+	}
 }
+
+return returnString;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
